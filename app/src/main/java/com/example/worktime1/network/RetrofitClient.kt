@@ -1,0 +1,120 @@
+package com.example.worktime1.network
+
+import com.example.worktime1.api.AuthApi
+import com.example.worktime1.model.TokenModel
+import com.example.worktime1.utils.ApiConstants.BASE_URL
+import com.example.worktime1.utils.PrefsHelper
+import kotlinx.coroutines.internal.synchronized
+import okhttp3.*
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
+
+fun provideRetrofit(okHttpClient: OkHttpClient) = Retrofit.Builder()
+    .baseUrl(BASE_URL)
+    .client(okHttpClient)
+    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+    .addConverterFactory(GsonConverterFactory.create())
+    .build()
+
+fun provideOkHttpClient(
+    headersInterceptor: HeadersInterceptor,
+    tokenAuthenticator: TokenAuthenticator
+): OkHttpClient {
+    return OkHttpClient()
+        .newBuilder()
+        .addInterceptor(headersInterceptor)
+        .authenticator(tokenAuthenticator)
+        .build()
+}
+
+fun provideHttpLoginingInterceptor(): HttpLoggingInterceptor {
+    return HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+}
+
+fun provideAuthApi(retrofit: Retrofit) = retrofit.create(AuthApi::class.java)
+
+fun provideTokenAuthenticator(preferences: PrefsHelper) = TokenAuthenticator(preferences)
+
+fun provideHeadersInterceptor(preferences: PrefsHelper)
+        = HeadersInterceptor(preferences)
+
+class HeadersInterceptor(private val preferences: PrefsHelper) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val token = preferences.getToken()
+        val request = chain.request().newBuilder()
+        if (token.isNotEmpty())
+            request.addHeader("token", "$token")
+
+        return chain.proceed(request.build())
+    }
+}
+
+fun provideAuthWithOutAuthenticatorApi(): AuthApi {
+    return Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(
+            OkHttpClient.Builder()
+                .addInterceptor(provideHttpLoginingInterceptor()).build()
+        )
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(AuthApi::class.java)
+}
+
+class TokenAuthenticator(
+    private val preferences: PrefsHelper
+) : Authenticator {
+
+    val api = provideAuthWithOutAuthenticatorApi()
+    private val MAX_COUNT_OF_FALL_RESPONSE = 3
+    override fun authenticate(route: Route?, response: Response): Request? {
+        if (countOfFailedResponse(response) >= MAX_COUNT_OF_FALL_RESPONSE) {
+            return null
+        }
+
+//        synchronized(this) {
+//            val result = refreshToken(preferences)
+//            if (!result) return null
+//        }
+
+        return response.request
+            .newBuilder()
+            .addHeader("Authorization", "Token ${preferences.getToken()}")
+            .build()
+    }
+
+    private fun refreshToken(preferences: PrefsHelper): Boolean {
+        var isUpdatedToken = false
+        api.refreshToken(TokenModel(refreshToken = preferences.getRefreshToken()))
+            .enqueue(object : Callback<TokenModel> {
+                override fun onFailure(call: Call<TokenModel>, t: Throwable) {}
+
+                override fun onResponse(
+                    call: Call<TokenModel>,
+                    response: retrofit2.Response<TokenModel>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+
+                        val token = response.body()?.accessToken ?: ""
+                        token.let { preferences.saveAccessToken(it) }
+                        isUpdatedToken = true
+                    }
+                }
+            })
+        return isUpdatedToken
+    }
+
+    private fun countOfFailedResponse(response: Response): Int {
+        var count = 1
+        while (response.priorResponse != null) {
+            count += 1
+        }
+        return count
+    }
+}

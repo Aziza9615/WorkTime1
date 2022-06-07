@@ -1,18 +1,15 @@
-package com.example.worktime1
+package com.example.worktime1.ui
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import com.example.worktime1.base.BaseActivity
-import com.example.worktime1.base.BaseViewModel
 import com.example.worktime1.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-class MainActivity : BaseActivity<BaseViewModel, ActivityMainBinding>(BaseViewModel::class) {
+class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewModel::class) {
 
     override fun getViewBinding() = ActivityMainBinding.inflate(layoutInflater)
 
     override fun setupViews() {
-        viewModel = getViewModel(clazz = BaseViewModel::class)
+        viewModel = getViewModel(clazz = MainViewModel::class)
     }
 
     override fun subscribeToLiveData() {
