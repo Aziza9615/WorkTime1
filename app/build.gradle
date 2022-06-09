@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: "kotlin-kapt"
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 31
@@ -23,11 +23,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 
     buildFeatures {
@@ -38,7 +38,7 @@ android {
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.5.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -47,35 +47,36 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.7.3'
 
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.recyclerview:recyclerview-selection:1.1.0-rc03"
+
     implementation 'androidx.cardview:cardview:1.0.0'
+
+    implementation 'com.google.android.material:material:1.2.1'
+
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
+
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
     implementation "androidx.lifecycle:lifecycle-common-java8:2.3.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
 
-    def koin_version = "3.0.1-beta-2"
+    implementation 'com.android.support:multidex:1.0.3'
+
+    def koin_version= "3.0.1-beta-2"
     implementation "io.insert-koin:koin-android:$koin_version"
     implementation "io.insert-koin:koin-android-ext:$koin_version"
 
-    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
-
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
-
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-
-    implementation 'org.permissionsdispatcher:permissionsdispatcher:4.3.0'
-
-    kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.3.0"
-    implementation 'com.github.RHSaliya:PasswordStrengthView:1.0'
-
-    implementation("io.github.vicmikhailau:MaskedEditText:4.0.7")
 }
