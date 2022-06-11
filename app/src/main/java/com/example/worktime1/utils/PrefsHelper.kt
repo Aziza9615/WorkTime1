@@ -7,6 +7,7 @@ class PrefsHelper(private val context: Context) {
 
     private val PREFS_NAME = "WorkTimeApp"
     private val TOKEN = "TOKEN"
+    private var IS_STUFF = "IS_STUFF"
     private val REFRESH_TOKEN = "REFRESH_TOKEN"
     private var prefs: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -21,6 +22,10 @@ class PrefsHelper(private val context: Context) {
 
     fun saveAccessToken(token: String?) {
         prefs.edit().putString(TOKEN, token).apply()
+    }
+
+    fun saveIsStuff(isStuff: Boolean) {
+        prefs.edit().putBoolean(IS_STUFF, isStuff).apply()
     }
 
     fun getToken(): String {

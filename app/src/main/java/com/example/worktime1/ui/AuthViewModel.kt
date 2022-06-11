@@ -28,7 +28,7 @@ class AuthViewModel(
                 .observeForever {
                     when (it.status) {
                         ResponseResultStatus.SUCCESS -> {
-                            login(user.username.toString())
+                            login(user.email.toString())
                         }
                         ResponseResultStatus.ERROR -> {
                             message.value = it.message
@@ -38,9 +38,9 @@ class AuthViewModel(
         }
     }
 
-    fun login(username: String) {
+    fun login(email: String) {
         viewModelScope.launch {
-            repository.login(username)
+            repository.login(email)
                 .observeForever {
                     when (it.status) {
                         ResponseResultStatus.SUCCESS -> {

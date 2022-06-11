@@ -1,19 +1,14 @@
 package com.example.worktime1.base
 
+import com.example.worktime1.model.AuthModel
+
 sealed class BaseEvent {
     class Error(message: String) : BaseEvent()
     class Success<T>(result: T) : BaseEvent()
     class Loading(state: Boolean) : BaseEvent()
 }
 
-sealed class LangEvent : BaseEvent() {
-    class LangFetched() : LangEvent()
-}
-
-sealed class CurrencyEvent : BaseEvent() {
-    class CurrencyFetched(it: Any?) : CurrencyEvent()
-}
-
-sealed class CategoryEvent : BaseEvent() {
-    class CategoryFetched(it: Any?) : CategoryEvent()
+sealed class ProfileEvent : BaseEvent() {
+    class UserProfileFetched(val item: AuthModel?) : ProfileEvent()
+    class UserIsStuffFetched(val item: AuthModel) : ProfileEvent()
 }
