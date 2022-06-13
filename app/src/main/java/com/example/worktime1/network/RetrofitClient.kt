@@ -1,6 +1,7 @@
 package com.example.worktime1.network
 
 import com.example.worktime1.api.AuthApi
+import com.example.worktime1.api.MainApi
 import com.example.worktime1.model.TokenModel
 import com.example.worktime1.utils.ApiConstants.BASE_URL
 import com.example.worktime1.utils.PrefsHelper
@@ -38,6 +39,7 @@ fun provideHttpLoginingInterceptor(): HttpLoggingInterceptor {
 }
 
 fun provideAuthApi(retrofit: Retrofit) = retrofit.create(AuthApi::class.java)
+fun provideMainApi(retrofit: Retrofit) = retrofit.create(MainApi::class.java)
 
 fun provideTokenAuthenticator(preferences: PrefsHelper) = TokenAuthenticator(preferences)
 

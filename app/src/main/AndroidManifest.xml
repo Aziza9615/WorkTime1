@@ -25,11 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.MainActivity"/>
+        <activity android:name=".ui.main.MainActivity"/>
         <activity android:name=".ui.ConfirmActivity"/>
         <activity android:name=".ui.WebActivity"/>
         <activity android:name=".ui.scan.ScanActivity"/>
         <activity android:name=".ui.scan.ScannerViewActivity"/>
+
     </application>
 
 </manifest>

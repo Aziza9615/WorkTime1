@@ -24,7 +24,8 @@ class WorkTimeApp: Application() {
             listOf(
                 networkRepository,
                 repositoryModule,
-                viewModelModule
+                viewModelModule,
+                fragmentModule
             )
         )
     }

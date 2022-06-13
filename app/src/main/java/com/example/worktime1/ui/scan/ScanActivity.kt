@@ -4,15 +4,22 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.example.worktime1.R
 import com.example.worktime1.base.BaseActivity
 import com.example.worktime1.databinding.ActivityScanBinding
 import com.example.worktime1.ui.AuthViewModel
-import com.example.worktime1.ui.MainActivity
+import com.example.worktime1.ui.main.MainActivity
 import com.example.worktime1.ui.WebActivity
+import com.example.worktime1.ui.main.MainFragment
 import com.example.worktime1.utils.Constants
+import kotlinx.android.synthetic.main.fragment_main.view.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class ScanActivity : BaseActivity<AuthViewModel, ActivityScanBinding>(AuthViewModel::class) {

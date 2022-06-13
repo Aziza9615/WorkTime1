@@ -308,7 +308,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/arrow_back_ios/baseline_arrow_back_ios_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/calendar_month/baseline_calendar_month_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -318,8 +318,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_arrow" />
-                            <entry key="sourceFile" value="C:\android projects\MT 1.svg" />
+                            <entry key="outputName" value="ic_baseline_calendar_month_24" />
+                            <entry key="sourceFile" value="C:\android projects\Ellipse 266.svg" />
                           </map>
                         </option>
                       </PersistentState>

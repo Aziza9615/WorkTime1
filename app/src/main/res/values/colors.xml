@@ -11,4 +11,8 @@
     <color name="sum">#D9D9D9</color>
     <color name="confirm">#80EDE7F6</color>
     <color name="scan">#14141466</color>
+    <color name="text">#898989</color>
+    <color name="txt_white">#CFCFCF</color>
+    <color name="view">#FF0000</color>
+    <color name="view_green">#00FF19</color>
 </resources>
