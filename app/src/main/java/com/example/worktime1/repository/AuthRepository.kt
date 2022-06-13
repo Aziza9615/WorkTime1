@@ -6,12 +6,14 @@ import com.example.worktime1.model.AuthModel
 import com.example.worktime1.model.TokenModel
 import com.example.worktime1.network.ResponseResult
 import com.example.worktime1.utils.PrefsHelper
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 interface AuthRepository {
-    fun regUser(user: AuthModel): MutableLiveData<ResponseResult<AuthModel>>
     fun login(username: String): MutableLiveData<ResponseResult<TokenModel>>
     fun refreshToken(): MutableLiveData<ResponseResult<String>>
 }
@@ -40,20 +42,6 @@ class AuthRepositoryImpl(private val api: AuthApi, private val preferences: Pref
                 }
             })
         return result
-    }
-
-    override fun regUser(user: AuthModel): MutableLiveData<ResponseResult<AuthModel>> {
-        val data: MutableLiveData<ResponseResult<AuthModel>> = MutableLiveData(ResponseResult.loading())
-        api.regUser(user).enqueue(object : Callback<AuthModel> {
-            override fun onFailure(call: Call<AuthModel>, t: Throwable) {
-                data.value = ResponseResult.error(t.message)
-            }
-
-            override fun onResponse(call: Call<AuthModel>, response: Response<AuthModel>) {
-                data.value = ResponseResult.success(response.body())
-            }
-        })
-        return data
     }
 
     override fun login(

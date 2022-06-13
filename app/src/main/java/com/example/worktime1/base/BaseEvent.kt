@@ -9,6 +9,5 @@ sealed class BaseEvent {
 }
 
 sealed class ProfileEvent : BaseEvent() {
-    class UserProfileFetched(val item: AuthModel?) : ProfileEvent()
     class UserIsStuffFetched(val item: AuthModel) : ProfileEvent()
 }

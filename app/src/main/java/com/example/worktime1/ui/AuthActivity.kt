@@ -20,50 +20,42 @@ import com.example.worktime1.databinding.ActivityMainBinding
 import com.example.worktime1.utils.PrefsHelper
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-class DefaultViewModel : BaseViewModel <BaseEvent>()
-
-class AuthActivity : BaseActivity<DefaultViewModel, ActivityAuthBinding>(DefaultViewModel::class) {
+class AuthActivity : BaseActivity<AuthViewModel, ActivityAuthBinding>(AuthViewModel::class) {
 
     private lateinit var preferences: PrefsHelper
 
     override fun getViewBinding() = ActivityAuthBinding.inflate(layoutInflater)
 
     override fun setupViews() {
-        //preferences = PrefsHelper(this)
-        viewModel = getViewModel(clazz = DefaultViewModel::class)
+        preferences = PrefsHelper(this)
+        viewModel = getViewModel(clazz = AuthViewModel::class)
         setupListener()
     }
 
+    private fun login() {
+        viewModel.login(email = binding.etEmail.text.toString())
+    }
+
     private fun setupListener() {
-//        binding.btnEnter.setOnClickListener {
-//            val intent = Intent(this, ConfirmActivity::class.java)
-//            startActivity(intent)
-//        }
+        binding.btnEnter.setOnClickListener { login() }
         binding.btnEnter.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SENDTO)
-            intent.data = Uri.parse("mailto:")
-            intent.putExtra(Intent.EXTRA_EMAIL, "")
-            intent.putExtra(Intent.EXTRA_SUBJECT, "")
-            if (intent.resolveActivity(this.packageManager) != null) {
-                startActivity(intent)
-            }
+            startActivity(Intent(this@AuthActivity, ConfirmActivity::class.java))
         }
     }
 
     override fun subscribeToLiveData() {
-//        viewModel.event.observe(this, Observer {
-//            when (it) {
-//                is ProfileEvent.UserIsStuffFetched -> {
-//                    if (it.item.isStuff == true) {
-//                        preferences.saveIsStuff(true)
-//                        startActivity(Intent(this, ConfirmActivity::class.java))
-//                        startActivity(intent)
-//                    }
-//                }
-//            }
-//        })
-//        viewModel.error.observe(this, Observer {
-//            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
-//        })
+        viewModel.event.observe(this, Observer {
+            when (it) {
+                is ProfileEvent.UserIsStuffFetched -> {
+                    if (it.item.isStuff == true) {
+                        preferences.saveIsStuff(true)
+                        startActivity(Intent(this, ConfirmActivity::class.java))
+                    }
+                }
+            }
+            viewModel.error.observe(this, Observer {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+            })
+        })
     }
 }
