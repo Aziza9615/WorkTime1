@@ -2,10 +2,9 @@ package com.example.worktime1.network
 
 import com.example.worktime1.api.AuthApi
 import com.example.worktime1.api.MainApi
-import com.example.worktime1.model.TokenModel
+import com.example.worktime1.model.EmailModel
 import com.example.worktime1.utils.ApiConstants.BASE_URL
 import com.example.worktime1.utils.PrefsHelper
-import kotlinx.coroutines.internal.synchronized
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -23,12 +22,10 @@ fun provideRetrofit(okHttpClient: OkHttpClient) = Retrofit.Builder()
 
 fun provideOkHttpClient(
     headersInterceptor: HeadersInterceptor,
-    tokenAuthenticator: TokenAuthenticator
 ): OkHttpClient {
     return OkHttpClient()
         .newBuilder()
         .addInterceptor(headersInterceptor)
-        .authenticator(tokenAuthenticator)
         .build()
 }
 
@@ -40,8 +37,6 @@ fun provideHttpLoginingInterceptor(): HttpLoggingInterceptor {
 
 fun provideAuthApi(retrofit: Retrofit) = retrofit.create(AuthApi::class.java)
 fun provideMainApi(retrofit: Retrofit) = retrofit.create(MainApi::class.java)
-
-fun provideTokenAuthenticator(preferences: PrefsHelper) = TokenAuthenticator(preferences)
 
 fun provideHeadersInterceptor(preferences: PrefsHelper)
         = HeadersInterceptor(preferences)
@@ -69,49 +64,6 @@ fun provideAuthWithOutAuthenticatorApi(): AuthApi {
         .create(AuthApi::class.java)
 }
 
-class TokenAuthenticator(
-    private val preferences: PrefsHelper
-) : Authenticator {
-
-    val api = provideAuthWithOutAuthenticatorApi()
-    private val MAX_COUNT_OF_FALL_RESPONSE = 3
-    override fun authenticate(route: Route?, response: Response): Request? {
-        if (countOfFailedResponse(response) >= MAX_COUNT_OF_FALL_RESPONSE) {
-            return null
-        }
-
-//        synchronized(this) {
-//            val result = refreshToken(preferences)
-//            if (!result) return null
-//        }
-
-        return response.request
-            .newBuilder()
-            .addHeader("Authorization", "Token ${preferences.getToken()}")
-            .build()
-    }
-
-    private fun refreshToken(preferences: PrefsHelper): Boolean {
-        var isUpdatedToken = false
-        api.refreshToken(TokenModel(refreshToken = preferences.getRefreshToken()))
-            .enqueue(object : Callback<TokenModel> {
-                override fun onFailure(call: Call<TokenModel>, t: Throwable) {}
-
-                override fun onResponse(
-                    call: Call<TokenModel>,
-                    response: retrofit2.Response<TokenModel>
-                ) {
-                    if (response.isSuccessful && response.body() != null) {
-
-                        val token = response.body()?.accessToken ?: ""
-                        token.let { preferences.saveAccessToken(it) }
-                        isUpdatedToken = true
-                    }
-                }
-            })
-        return isUpdatedToken
-    }
-
     private fun countOfFailedResponse(response: Response): Int {
         var count = 1
         while (response.priorResponse != null) {
@@ -119,4 +71,3 @@ class TokenAuthenticator(
         }
         return count
     }
-}

@@ -27,7 +27,6 @@ data class ResponseResult<T>(
                 message
             )
         }
-
         fun <T> loading(message: String? = null): ResponseResult<T> {
             return ResponseResult(
                 ResponseResultStatus.LOADING,

@@ -19,7 +19,7 @@ val fragmentModule = module {
 }
 
 val viewModelModule = module {
-    viewModel { AuthViewModel(get(), get()) }
+    viewModel { AuthViewModel(get()) }
     viewModel { MainViewModel(get()) }
 }
 
@@ -30,9 +30,8 @@ val repositoryModule = module {
 
 val networkRepository = module {
     single { provideRetrofit(get()) }
-    single { provideOkHttpClient(get(), get()) }
+    single { provideOkHttpClient(get()) }
     single { provideHttpLoginingInterceptor() }
-    single { provideTokenAuthenticator(get()) }
     single { provideHeadersInterceptor(get()) }
     single { provideAuthApi(get()) }
     single { provideMainApi(get()) }

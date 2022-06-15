@@ -3,17 +3,12 @@ package com.example.worktime1.ui.main
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.worktime1.R
 import com.example.worktime1.base.BaseFragment
 import com.example.worktime1.base.ListEvent
 import com.example.worktime1.databinding.FragmentMainBinding
 import com.example.worktime1.model.MainData
 import com.example.worktime1.ui.scan.ScanActivity
-import com.example.worktime1.ui.scan.ScannerViewActivity
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.text.SimpleDateFormat
@@ -48,33 +43,27 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(MainViewMo
             val intent = Intent(requireContext(), ScanActivity::class.java)
             startActivity(intent)
         }
-        binding.view1.setOnClickListener {
+        binding.time.setOnClickListener {
             showDataRangePicker()
         }
     }
 
     private fun showDataRangePicker() {
-
         val dateRangePicker =
             MaterialDatePicker
                 .Builder.dateRangePicker()
-                .setTitleText("Select Date")
                 .build()
 
         getFragmentManager()?.let {
-            dateRangePicker.show(
-                it,
-                "date_range_picker"
-            )
+            dateRangePicker.show(it, "date_range_picker")
         }
 
         dateRangePicker.addOnPositiveButtonClickListener { dateSelected ->
-
             val startDate = dateSelected.first
             val endDate = dateSelected.second
-
             if (startDate != null && endDate != null) {
-                binding.view2.text = "Reserved\nStartDate: ${convertLongToTime(startDate)}\n" + "EndDate: ${convertLongToTime(endDate)}"
+                binding.view9.text = "${convertLongToTime(startDate)}"
+                binding.view3.text = "${convertLongToTime(endDate)}"
             }
         }
     }

@@ -1,22 +1,12 @@
 package com.example.worktime1.ui
 
 import android.content.Intent
-import android.graphics.Typeface
-import android.net.Uri
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.StyleSpan
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import com.example.worktime1.R
 import com.example.worktime1.base.BaseActivity
-import com.example.worktime1.base.BaseEvent
-import com.example.worktime1.base.BaseViewModel
 import com.example.worktime1.base.ProfileEvent
 import com.example.worktime1.databinding.ActivityAuthBinding
-import com.example.worktime1.databinding.ActivityMainBinding
+import com.example.worktime1.ui.confirm.ConfirmActivity
 import com.example.worktime1.utils.PrefsHelper
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -32,13 +22,13 @@ class AuthActivity : BaseActivity<AuthViewModel, ActivityAuthBinding>(AuthViewMo
         setupListener()
     }
 
-    private fun login() {
-        viewModel.login(email = binding.etEmail.text.toString())
+    private fun sendEmail() {
+        viewModel.sendEmail(email = binding.etEmail.text.toString())
     }
 
     private fun setupListener() {
-        binding.btnEnter.setOnClickListener { login() }
         binding.btnEnter.setOnClickListener {
+            sendEmail()
             startActivity(Intent(this@AuthActivity, ConfirmActivity::class.java))
         }
     }

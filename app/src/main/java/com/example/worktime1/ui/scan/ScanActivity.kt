@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.example.worktime1.R
 import com.example.worktime1.base.BaseActivity
 import com.example.worktime1.databinding.ActivityScanBinding
@@ -19,6 +20,7 @@ import com.example.worktime1.ui.main.MainActivity
 import com.example.worktime1.ui.WebActivity
 import com.example.worktime1.ui.main.MainFragment
 import com.example.worktime1.utils.Constants
+import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 

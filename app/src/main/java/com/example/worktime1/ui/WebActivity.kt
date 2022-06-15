@@ -17,7 +17,6 @@ class WebActivity : BaseActivity<AuthViewModel, ActivityWebBinding>(AuthViewMode
         PrefsHelper.instance = PrefsHelper(this)
         setupListener()
     }
-
     private fun setupListener() {
         binding.company.setOnClickListener {
             startActivity(Intent(this@WebActivity, ScanActivity::class.java))

@@ -16,7 +16,6 @@ class WorkTimeApp: Application() {
             inject()
         }
     }
-
     fun inject() = loadKoinModules
 
     private val loadKoinModules by lazy {

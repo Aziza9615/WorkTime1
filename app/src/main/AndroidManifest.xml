@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.worktime1">
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -17,16 +16,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.WorkTime1">
+        android:theme="@style/AppTheme">
         <activity android:name=".ui.AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".ui.main.MainActivity"/>
-        <activity android:name=".ui.ConfirmActivity"/>
+        <activity android:name=".ui.confirm.ConfirmActivity"/>
         <activity android:name=".ui.WebActivity"/>
         <activity android:name=".ui.scan.ScanActivity"/>
         <activity android:name=".ui.scan.ScannerViewActivity"/>

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.worktime1.base.BaseEvent
 import com.example.worktime1.base.BaseViewModel
 import com.example.worktime1.base.ProfileEvent
+import com.example.worktime1.model.EmailModel
 import com.example.worktime1.network.ResponseResultStatus
 import com.example.worktime1.repository.AuthRepository
 import com.example.worktime1.utils.PrefsHelper
@@ -12,7 +13,6 @@ import kotlinx.coroutines.launch
 
 class AuthViewModel(
     private val repository: AuthRepository,
-    private val preferences: PrefsHelper
 ) :
     BaseViewModel<BaseEvent>() {
 
@@ -22,20 +22,13 @@ class AuthViewModel(
         message = MutableLiveData()
     }
 
-    fun login(email: String) {
+    fun sendEmail(email: String) {
         viewModelScope.launch {
-            repository.login(email)
-                .observeForever {
-                    when (it.status) {
-                        ResponseResultStatus.SUCCESS -> {
-                            preferences.saveAccessToken(it?.result?.accessToken)
-                            preferences.saveRefreshToken(it?.result?.refreshToken)
-                        }
-                        ResponseResultStatus.ERROR -> {
-                            it.message.let { error.value = it }
-                        }
-                    }
-                }
+            repository.sendEmail(
+                EmailModel(
+                    email = email
+                )
+            )
         }
     }
 }

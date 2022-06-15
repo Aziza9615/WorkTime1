@@ -1,9 +1,7 @@
 package com.example.worktime1.utils
 
-import com.example.worktime1.R
 
 class Constants {
-
     companion object{
         const val BAR_CODE = "BarCode"
         const val BAR_CODE_NOT_FOUND = "Bar code not found"
