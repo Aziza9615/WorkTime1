@@ -4,27 +4,20 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import com.example.worktime1.R
 import com.example.worktime1.base.BaseActivity
 import com.example.worktime1.databinding.ActivityScanBinding
-import com.example.worktime1.ui.AuthViewModel
+import com.example.worktime1.ui.EmailViewModel
 import com.example.worktime1.ui.main.MainActivity
 import com.example.worktime1.ui.WebActivity
-import com.example.worktime1.ui.main.MainFragment
 import com.example.worktime1.utils.Constants
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-class ScanActivity : BaseActivity<AuthViewModel, ActivityScanBinding>(AuthViewModel::class) {
+class ScanActivity : BaseActivity<EmailViewModel, ActivityScanBinding>(EmailViewModel::class) {
 
     private val ZXING_CAMERA_PERMISSION = 1
     private var mClss: Class<*>? = null
@@ -32,7 +25,7 @@ class ScanActivity : BaseActivity<AuthViewModel, ActivityScanBinding>(AuthViewMo
     override fun getViewBinding() = ActivityScanBinding.inflate(layoutInflater)
 
     override fun setupViews() {
-        viewModel = getViewModel(clazz = AuthViewModel::class)
+        viewModel = getViewModel(clazz = EmailViewModel::class)
         setupListener()
     }
 
@@ -44,6 +37,9 @@ class ScanActivity : BaseActivity<AuthViewModel, ActivityScanBinding>(AuthViewMo
             startActivity(Intent(this@ScanActivity, WebActivity::class.java))
         }
         binding.btnStatistic.setOnClickListener {
+            startActivity(Intent(this@ScanActivity, MainActivity::class.java))
+        }
+        binding.arrow.setOnClickListener {
             startActivity(Intent(this@ScanActivity, MainActivity::class.java))
         }
     }

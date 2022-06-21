@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="LabelColor_text_50">#FFFFFF</color>
+    <color name="ValueColor_text_50">#333322</color>
+    <color name="LabelColor_bg_50">#A5D3F4</color>
+    <color name="ValueColor_bg_50">#E6EEF4</color>
     <color name="hex">#000346</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
@@ -15,4 +22,5 @@
     <color name="txt_white">#CFCFCF</color>
     <color name="view">#FF0000</color>
     <color name="view_green">#00FF19</color>
+    <color name="btn_enable">#80000346</color>
 </resources>

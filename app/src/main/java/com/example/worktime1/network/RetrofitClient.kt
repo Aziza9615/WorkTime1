@@ -1,8 +1,9 @@
 package com.example.worktime1.network
 
-import com.example.worktime1.api.AuthApi
+import com.example.worktime1.api.ConfirmApi
+import com.example.worktime1.api.EmailApi
 import com.example.worktime1.api.MainApi
-import com.example.worktime1.model.EmailModel
+import com.example.worktime1.api.WebApi
 import com.example.worktime1.utils.ApiConstants.BASE_URL
 import com.example.worktime1.utils.PrefsHelper
 import okhttp3.*
@@ -22,10 +23,12 @@ fun provideRetrofit(okHttpClient: OkHttpClient) = Retrofit.Builder()
 
 fun provideOkHttpClient(
     headersInterceptor: HeadersInterceptor,
+    tokenAuthenticator: TokenAuthenticator
 ): OkHttpClient {
     return OkHttpClient()
         .newBuilder()
         .addInterceptor(headersInterceptor)
+        .authenticator(tokenAuthenticator)
         .build()
 }
 
@@ -35,8 +38,12 @@ fun provideHttpLoginingInterceptor(): HttpLoggingInterceptor {
     }
 }
 
-fun provideAuthApi(retrofit: Retrofit) = retrofit.create(AuthApi::class.java)
+fun provideTokenAuthenticator(preferences: PrefsHelper) = TokenAuthenticator(preferences)
+
+fun provideEmailApi(retrofit: Retrofit) = retrofit.create(EmailApi::class.java)
 fun provideMainApi(retrofit: Retrofit) = retrofit.create(MainApi::class.java)
+fun provideWebApi(retrofit: Retrofit) = retrofit.create(WebApi::class.java)
+fun provideConfirmApi(retrofit: Retrofit) = retrofit.create(ConfirmApi::class.java)
 
 fun provideHeadersInterceptor(preferences: PrefsHelper)
         = HeadersInterceptor(preferences)
@@ -52,7 +59,7 @@ class HeadersInterceptor(private val preferences: PrefsHelper) : Interceptor {
     }
 }
 
-fun provideAuthWithOutAuthenticatorApi(): AuthApi {
+fun provideAuthWithOutAuthenticatorApi(): EmailApi {
     return Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(
@@ -61,8 +68,26 @@ fun provideAuthWithOutAuthenticatorApi(): AuthApi {
         )
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-        .create(AuthApi::class.java)
+        .create(EmailApi::class.java)
 }
+
+class TokenAuthenticator(
+    private val preferences: PrefsHelper
+) : Authenticator {
+
+    val api = provideAuthWithOutAuthenticatorApi()
+    private val MAX_COUNT_OF_FALL_RESPONSE = 3
+    override fun authenticate(route: Route?, response: Response): Request? {
+        if (countOfFailedResponse(response) >= MAX_COUNT_OF_FALL_RESPONSE) {
+            return null
+        }
+
+        return response.request
+            .newBuilder()
+            .addHeader("Authorization", "Token ${preferences.getToken()}")
+            .build()
+    }
+
 
     private fun countOfFailedResponse(response: Response): Int {
         var count = 1
@@ -71,3 +96,4 @@ fun provideAuthWithOutAuthenticatorApi(): AuthApi {
         }
         return count
     }
+}

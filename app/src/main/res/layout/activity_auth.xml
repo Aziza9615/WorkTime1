@@ -5,6 +5,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
+
     <ImageView
         android:id="@+id/image_iv"
         android:layout_width="match_parent"
@@ -69,6 +79,7 @@
             android:textColorHint="@color/hex"
             android:textStyle="normal"
             android:textSize="12sp"
+            android:inputType="textEmailAddress"
             android:layout_marginTop="25dp"
             android:layout_marginStart="52dp"
             android:textColor="@color/hex"

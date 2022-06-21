@@ -2,9 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Disable background -->
     <item android:state_enabled="false"
-        android:color="@color/purple_200"
-        />
-
+        android:color="@color/btn_enable"/>
     <item android:color="@color/hex"/>
 
 </selector>

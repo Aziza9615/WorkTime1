@@ -25,3 +25,16 @@ fun showAlertDialog(context: Context, action: () -> Unit) {
         .setNegativeButton("Нет", null)
         .show()
 }
+
+fun checkHttpCodes(context: Context, code: Int) {
+    when (code) {
+        200 -> showToast(context, "Успех")
+        400 -> showToast(context, "Неверный запрос, неверно заданы параметры")
+        401 -> showToast(context, "Неавторизованный пользователь")
+        403 -> showToast(context, "Доступ запрещен или неверный токен")
+        404 -> showToast(context, "Метод или данные не найдены")
+        409 -> showToast(context, "Конфликт, дубликат")
+        429 -> showToast(context, "Превышен лимит запросов")
+        500 -> showToast(context, "Внутренняя ошибка сервера")
+    }
+}
