@@ -25,7 +25,7 @@ class EmailViewModel(private val repository: EmailRepository) : BaseViewModel<Ba
                             email(email.toString())
                         }
                         ResponseResultStatus.ERROR -> {
-                            message.value = it.message
+                            it.message.let { error.value = it }
                         }
                     }
                 }

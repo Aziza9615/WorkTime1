@@ -27,7 +27,7 @@ class EmailActivity : BaseActivity<EmailViewModel, ActivityAuthBinding>(EmailVie
     }
 
     private fun setupListener() {
-        binding.btnEnter.setOnClickListener { email() }
+        binding.btnEnter.setOnClickListener {email()}
     }
 
     private fun email() {

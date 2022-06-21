@@ -13,6 +13,7 @@ import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 fun provideRetrofit(okHttpClient: OkHttpClient) = Retrofit.Builder()
     .baseUrl(BASE_URL)
@@ -38,12 +39,12 @@ fun provideHttpLoginingInterceptor(): HttpLoggingInterceptor {
     }
 }
 
-fun provideTokenAuthenticator(preferences: PrefsHelper) = TokenAuthenticator(preferences)
-
 fun provideEmailApi(retrofit: Retrofit) = retrofit.create(EmailApi::class.java)
-fun provideMainApi(retrofit: Retrofit) = retrofit.create(MainApi::class.java)
 fun provideWebApi(retrofit: Retrofit) = retrofit.create(WebApi::class.java)
 fun provideConfirmApi(retrofit: Retrofit) = retrofit.create(ConfirmApi::class.java)
+fun provideMainApi(retrofit: Retrofit) = retrofit.create(MainApi::class.java)
+
+fun provideTokenAuthenticator(preferences: PrefsHelper) = TokenAuthenticator(preferences)
 
 fun provideHeadersInterceptor(preferences: PrefsHelper)
         = HeadersInterceptor(preferences)
@@ -52,9 +53,7 @@ class HeadersInterceptor(private val preferences: PrefsHelper) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = preferences.getToken()
         val request = chain.request().newBuilder()
-        if (token.isNotEmpty())
-            request.addHeader("token", "$token")
-
+        if (token.isNotEmpty()) request.addHeader("token", "$token")
         return chain.proceed(request.build())
     }
 }
@@ -81,13 +80,11 @@ class TokenAuthenticator(
         if (countOfFailedResponse(response) >= MAX_COUNT_OF_FALL_RESPONSE) {
             return null
         }
-
         return response.request
             .newBuilder()
             .addHeader("Authorization", "Token ${preferences.getToken()}")
             .build()
     }
-
 
     private fun countOfFailedResponse(response: Response): Int {
         var count = 1
