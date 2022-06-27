@@ -2,8 +2,6 @@ package com.example.worktime1.ui.confirm
 
 import android.content.Intent
 import android.os.CountDownTimer
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -12,11 +10,11 @@ import com.example.worktime1.base.CodeEvent
 import com.example.worktime1.databinding.ActivityConfirmBinding
 import com.example.worktime1.ui.company.CompanyActivity
 import com.example.worktime1.ui.email.EmailActivity
-import com.example.worktime1.ui.scan.ScanActivity
 import com.fraggjkee.smsconfirmationview.SmsConfirmationView
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-class ConfirmActivity : BaseActivity<ConfirmViewModel, ActivityConfirmBinding>(ConfirmViewModel::class) {
+class ConfirmActivity :
+    BaseActivity<ConfirmViewModel, ActivityConfirmBinding>(ConfirmViewModel::class) {
 
     override fun getViewBinding() = ActivityConfirmBinding.inflate(layoutInflater)
 
@@ -25,26 +23,24 @@ class ConfirmActivity : BaseActivity<ConfirmViewModel, ActivityConfirmBinding>(C
         onClick()
         countdown()
         val view = binding.smsCodeView
+        view.isEnabled
+        binding.nextBtn.isEnabled = false
         view.onChangeListener = SmsConfirmationView.OnChangeListener { code, isComplete ->
-            Toast.makeText(this, "$code", Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
 
-    private val loginTextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            val name = binding.smsCodeView.toString().trim()
-            binding.btnNext.isEnabled = name.isNotEmpty()
+            if (code.length < 6) {
+                binding.nextBtn.isEnabled = false
+            }
+
+            if (isComplete) {
+                binding.nextBtn.isEnabled = true
+            }
         }
-        override fun afterTextChanged(s: Editable?) {}
     }
 
     private fun onClick() {
-        val code = binding.smsCodeView.toString().trim()
-        binding.btnNext.isEnabled = code.isNotEmpty()
-        binding.btnNext.setOnClickListener {
-            startActivity(Intent(this@ConfirmActivity, CompanyActivity::class.java))
+        binding.nextBtn.setOnClickListener {
+            if (binding.nextBtn.isEnabled)
+                startActivity(Intent(this@ConfirmActivity, CompanyActivity::class.java))
         }
         binding.arrowTxt.setOnClickListener {
             onBackPressed()
@@ -54,23 +50,24 @@ class ConfirmActivity : BaseActivity<ConfirmViewModel, ActivityConfirmBinding>(C
             onBackPressed()
             finish()
         }
+        //binding.smsCodeView.addTextChangedListener(loginTextWatcher)
     }
 
     private fun countdown() {
-            object : CountDownTimer(53000, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    binding.btnSend.text = (millisUntilFinished / 1000).toString()
-                }
+        object : CountDownTimer(53000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.sendBtn.text = (millisUntilFinished / 1000).toString()
+            }
 
-                override fun onFinish() {
-                    val code = binding.btnSend.toString().trim()
-                    binding.btnSend.isEnabled = code.isNotEmpty()
-                    binding.btnSend.text = "Отправить снова 00:53"
-                    binding.btnSend.setOnClickListener {
-                        startActivity(Intent(this@ConfirmActivity, EmailActivity::class.java))
-                    }
+            override fun onFinish() {
+                val code = binding.sendBtn.toString().trim()
+                binding.sendBtn.isEnabled = code.isNotEmpty()
+                binding.sendBtn.text = "Отправить снова 00:53"
+                binding.sendBtn.setOnClickListener {
+                    startActivity(Intent(this@ConfirmActivity, EmailActivity::class.java))
                 }
-            }.start()
+            }
+        }.start()
     }
 
     override fun subscribeToLiveData() {

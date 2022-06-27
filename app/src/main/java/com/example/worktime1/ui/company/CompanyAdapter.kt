@@ -42,7 +42,7 @@ class CompanyAdapter(private val listener: ClickListener) : RecyclerView.Adapter
 
     class ListViewHolder(var binding: ItemCompanyListBinding): BaseViewHolder(binding.root){
         fun bind(item: CompanyModel) {
-            itemView.company.text = item.toString()
+            itemView.company.text = item.company
         }
     }
 }

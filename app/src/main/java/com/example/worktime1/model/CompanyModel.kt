@@ -4,5 +4,5 @@ import java.io.Serializable
 
 data class CompanyModel (
     var id : Int? = null,
-    var company:String
+    var company: String
 ): Serializable
