@@ -2,6 +2,7 @@ package com.example.worktime1.repository
 
 import androidx.lifecycle.MutableLiveData
 import com.example.worktime1.api.EmailApi
+import com.example.worktime1.model.ConfirmModel
 import com.example.worktime1.model.EmailModel
 import com.example.worktime1.network.ResponseResult
 import com.example.worktime1.utils.PrefsHelper
@@ -11,6 +12,7 @@ import retrofit2.Response
 
 interface EmailRepository {
     fun email(email: String): MutableLiveData<ResponseResult<EmailModel>>
+    fun code(email: String, pin_code: String): MutableLiveData<ResponseResult<ConfirmModel>>
 }
 
 class EmailRepositoryImpl(private val api: EmailApi, private val preferences: PrefsHelper) :
@@ -33,6 +35,26 @@ class EmailRepositoryImpl(private val api: EmailApi, private val preferences: Pr
                 }
             }
 
+        })
+        return data
+    }
+
+    override fun code(email: String, pin_code: String): MutableLiveData<ResponseResult<ConfirmModel>> {
+        val map = mapOf("email" to email, "pin_code" to pin_code)
+        val data: MutableLiveData<ResponseResult<ConfirmModel>> =
+            MutableLiveData(ResponseResult.loading())
+        api.fetchConfirm(map).enqueue(object : Callback<ConfirmModel> {
+            override fun onFailure(call: Call<ConfirmModel>, t: Throwable) {
+                data.value = ResponseResult.error(t.message)
+            }
+
+            override fun onResponse(call: Call<ConfirmModel>, response: Response<ConfirmModel>) {
+                when (response.code()) {
+                    200 -> data.value = ResponseResult.success(response.body())
+                    401 -> data.value =
+                        ResponseResult.error("No active account found with the given credentials")
+                }
+            }
         })
         return data
     }

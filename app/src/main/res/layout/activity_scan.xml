@@ -80,7 +80,7 @@
             android:textStyle="bold"
             android:textColor="@color/hex" />
         
-        <ImageView
+        <com.budiyev.android.codescanner.CodeScannerView
             android:id="@+id/scan"
             android:layout_width="183dp"
             android:layout_height="195dp"
@@ -90,7 +90,14 @@
             android:layout_marginTop="53dp"
             android:layout_marginEnd="88dp"
             android:layout_marginStart="88dp"
-            android:background="@drawable/ic_scan" />
+            app:autoFocusButtonVisible="true"
+            app:frameColor="@color/sum"
+            app:frameCornersSize="20sp"
+            app:flashButtonVisible="true"
+            app:frameAspectRatioHeight="1"
+            app:frameAspectRatioWidth="1"
+            app:frameThickness="1dp"
+            android:background="@color/sum" />
 
         <TextView
             android:id="@+id/txt_scan"

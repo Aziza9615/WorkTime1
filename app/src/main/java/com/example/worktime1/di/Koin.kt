@@ -2,8 +2,9 @@ package com.example.worktime1.di
 
 import com.example.worktime1.network.*
 import com.example.worktime1.repository.*
-import com.example.worktime1.ui.EmailViewModel
-import com.example.worktime1.ui.WebViewModel
+import com.example.worktime1.ui.confirm.ConfirmViewModel
+import com.example.worktime1.ui.email.EmailViewModel
+import com.example.worktime1.ui.company.CompanyViewModel
 import com.example.worktime1.ui.main.MainFragment
 import com.example.worktime1.ui.main.MainViewModel
 import com.example.worktime1.utils.PrefsHelper
@@ -19,13 +20,13 @@ val fragmentModule = module {
 val viewModelModule = module {
     viewModel { EmailViewModel(get()) }
     viewModel { MainViewModel(get()) }
-    viewModel { WebViewModel(get()) }
+    viewModel { CompanyViewModel(get()) }
+    viewModel { ConfirmViewModel(get()) }
 }
 
 val repositoryModule = module {
     factory<EmailRepository> { EmailRepositoryImpl(get(), get()) }
-    factory<MainRepository> { MainRepositoryImpl(get()) }
-    factory<WebRepository> {WebRepositoryImpl(get())}
+    factory<CompanyRepository> { CompanyRepositoryImpl(get()) }
 }
 
 val networkRepository = module {
@@ -35,8 +36,6 @@ val networkRepository = module {
     single { provideTokenAuthenticator(get()) }
     single { provideHeadersInterceptor(get()) }
     single { provideEmailApi(get()) }
-    single { provideMainApi(get()) }
-    single { provideWebApi(get()) }
-    single { provideConfirmApi(get()) }
+    single { provideCompanyApi(get()) }
     single { PrefsHelper(androidContext()) }
 }

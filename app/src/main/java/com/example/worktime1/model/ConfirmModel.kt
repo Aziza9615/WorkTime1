@@ -6,9 +6,10 @@ data class ConfirmModelList(
     val code: Int,
     val result: MutableList<ConfirmModel>? = null,
     val message: String? = null
-)
+): Serializable
 
 data class ConfirmModel(
-    var id: Int? = null,
-    var number: String? = null
+    val id: Int,
+    var email: String,
+    var pin_code: String
 ) : Serializable

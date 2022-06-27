@@ -2,16 +2,15 @@ package com.example.worktime1.ui.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.worktime1.base.BaseViewHolder
 import com.example.worktime1.databinding.ItemListBinding
-import com.example.worktime1.model.MainData
+import com.example.worktime1.model.MainModel
 import kotlinx.android.synthetic.main.item_list.view.*
 
 class MainAdapter(private val listener: ClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var items = mutableListOf<MainData>()
+    private var items = mutableListOf<MainModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -31,24 +30,24 @@ class MainAdapter(private val listener: ClickListener) : RecyclerView.Adapter<Re
         }
     }
 
-    fun addItems(item: MutableList<MainData>) {
+    fun addItems(item: MutableList<MainModel>) {
         items = item
         notifyDataSetChanged()
     }
 
-    fun addItem(item: MainData) {
+    fun addItem(item: MainModel) {
         items.add(item)
         notifyDataSetChanged()
     }
 
     class ListViewHolder(var binding: ItemListBinding): BaseViewHolder(binding.root){
-        fun bind(item: MainData) {
-            itemView.date.text = item.date.toString()
-            itemView.being_late.text = item.time.toString()
-            itemView.time.text = item.time.toString()
+        fun bind(item: MainModel) {
+            itemView.date.text = item.day.toString().trim()
+            itemView.being_late.text = item.arrival_time.toString().trim()
+            itemView.time.text = item.late.toString().trim()
         }
     }
 }
 interface ClickListener {
-    fun onItemListener(item: MainData)
+    fun onItemListener(item: MainModel)
 }

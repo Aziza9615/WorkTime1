@@ -1,19 +1,14 @@
 package com.example.worktime1.network
 
-import com.example.worktime1.api.ConfirmApi
+import com.example.worktime1.api.CompanyApi
 import com.example.worktime1.api.EmailApi
-import com.example.worktime1.api.MainApi
-import com.example.worktime1.api.WebApi
 import com.example.worktime1.utils.ApiConstants.BASE_URL
 import com.example.worktime1.utils.PrefsHelper
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 fun provideRetrofit(okHttpClient: OkHttpClient) = Retrofit.Builder()
     .baseUrl(BASE_URL)
@@ -40,9 +35,7 @@ fun provideHttpLoginingInterceptor(): HttpLoggingInterceptor {
 }
 
 fun provideEmailApi(retrofit: Retrofit) = retrofit.create(EmailApi::class.java)
-fun provideWebApi(retrofit: Retrofit) = retrofit.create(WebApi::class.java)
-fun provideConfirmApi(retrofit: Retrofit) = retrofit.create(ConfirmApi::class.java)
-fun provideMainApi(retrofit: Retrofit) = retrofit.create(MainApi::class.java)
+fun provideCompanyApi(retrofit: Retrofit) = retrofit.create(CompanyApi::class.java)
 
 fun provideTokenAuthenticator(preferences: PrefsHelper) = TokenAuthenticator(preferences)
 

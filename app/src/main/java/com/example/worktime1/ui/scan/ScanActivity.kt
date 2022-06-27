@@ -4,14 +4,17 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.view.Menu
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.budiyev.android.codescanner.*
 import com.example.worktime1.base.BaseActivity
 import com.example.worktime1.databinding.ActivityScanBinding
-import com.example.worktime1.ui.EmailViewModel
+import com.example.worktime1.ui.email.EmailViewModel
 import com.example.worktime1.ui.main.MainActivity
-import com.example.worktime1.ui.WebActivity
+import com.example.worktime1.ui.company.CompanyActivity
+import com.example.worktime1.ui.confirm.ConfirmActivity
 import com.example.worktime1.utils.Constants
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
@@ -19,29 +22,90 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class ScanActivity : BaseActivity<EmailViewModel, ActivityScanBinding>(EmailViewModel::class) {
 
-    private val ZXING_CAMERA_PERMISSION = 1
-    private var mClss: Class<*>? = null
+    private lateinit var codeScanner: CodeScanner
 
     override fun getViewBinding() = ActivityScanBinding.inflate(layoutInflater)
 
     override fun setupViews() {
         viewModel = getViewModel(clazz = EmailViewModel::class)
         setupListener()
+        onClick()
     }
 
-    private fun setupListener() {
-        binding.scan.setOnClickListener {
-            launchActivity(ScannerViewActivity::class.java)
-        }
+    private fun onClick() {
         binding.txtCompany.setOnClickListener {
-            startActivity(Intent(this@ScanActivity, WebActivity::class.java))
+            startActivity(Intent(this@ScanActivity, CompanyActivity::class.java))
         }
         binding.btnStatistic.setOnClickListener {
             startActivity(Intent(this@ScanActivity, MainActivity::class.java))
         }
         binding.arrow.setOnClickListener {
-            startActivity(Intent(this@ScanActivity, MainActivity::class.java))
+            startActivity(Intent(this@ScanActivity, ConfirmActivity::class.java))
+            finish()
         }
+    }
+
+    private fun setupListener() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
+            PackageManager.PERMISSION_DENIED
+        ) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 123)
+        } else {
+            startScanning()
+        }
+    }
+
+    private fun startScanning() {
+        val scannerView: CodeScannerView = binding.scan
+        codeScanner = CodeScanner(this, scannerView)
+        codeScanner.camera = CodeScanner.CAMERA_BACK
+        codeScanner.formats = CodeScanner.ALL_FORMATS
+        codeScanner.autoFocusMode = AutoFocusMode.SAFE
+        codeScanner.scanMode = ScanMode.SINGLE
+        codeScanner.isAutoFocusEnabled = true
+        codeScanner.isFlashEnabled = false
+
+        codeScanner.decodeCallback = DecodeCallback {
+            runOnUiThread {
+                Toast.makeText(this, "Scan Result", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        codeScanner.errorCallback = ErrorCallback {
+            runOnUiThread {
+                Toast.makeText(this, "Scan Result: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.scan.setOnClickListener {
+            codeScanner.startPreview()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 123) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Camera permissions", Toast.LENGTH_SHORT).show()
+                startScanning()
+            } else {
+                Toast.makeText(this, "", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::codeScanner.isInitialized) {
+            codeScanner.startPreview()
+        }
+    }
+
+    override fun onPause() {
+        if (::codeScanner.isInitialized) {
+            codeScanner.releaseResources()
+        }
+        super.onPause()
     }
 
      @SuppressLint("MissingSuperCall")
@@ -53,30 +117,6 @@ class ScanActivity : BaseActivity<EmailViewModel, ActivityScanBinding>(EmailView
                  .show()
          }
      }
-
-    private fun launchActivity(clss: Class<*>) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            mClss = clss
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.CAMERA), ZXING_CAMERA_PERMISSION)
-        } else {
-            val intent = Intent(this, clss)
-            startActivityForResult(intent, 2)
-        }
-    }
-
-    @SuppressLint("MissingSuperCall")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            ZXING_CAMERA_PERMISSION -> {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, Constants.PRESS_AGAIN_TO_SCAN, Toast.LENGTH_LONG).show()
-                } else {
-                }
-                return
-            }
-        }
-    }
 
     override fun subscribeToLiveData() {}
 }

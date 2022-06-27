@@ -6,6 +6,16 @@
     android:background="@color/white"
     android:id="@+id/frameLayoutRoot">
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
+
     <ImageView
         android:id="@+id/image_iv"
         android:layout_width="match_parent"
@@ -134,13 +144,14 @@
             android:layout_marginBottom="48dp"
             android:layout_marginStart="51dp"
             android:layout_marginEnd="51dp"
-            android:hint="Отправить"
+            android:hint="Войти"
             android:typeface="sans"
             android:fontFamily="@font/bold"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:theme="@style/BlueButton" />
+            android:theme="@style/BlueButton"
+            android:enabled="false"/>
 
         <TextView
             android:id="@+id/sms"

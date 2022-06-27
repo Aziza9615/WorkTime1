@@ -2,25 +2,25 @@ package com.example.worktime1.ui.main
 
 import com.example.worktime1.base.BaseEvent
 import com.example.worktime1.base.BaseViewModel
-import com.example.worktime1.base.ListEvent
-import com.example.worktime1.model.MainData
-import com.example.worktime1.repository.MainRepository
+import com.example.worktime1.base.MainEvent
+import com.example.worktime1.model.MainModel
+import com.example.worktime1.repository.CompanyRepository
 
-class MainViewModel(private val repository: MainRepository): BaseViewModel<BaseEvent>() {
+class MainViewModel(private val repository: CompanyRepository): BaseViewModel<BaseEvent>() {
 
-    var data: MutableList<MainData>? = mutableListOf()
+    var list: MutableList<MainModel>? = mutableListOf()
 
     init {
-        fetchList()
+        fetchMain()
     }
 
-    fun fetchList() {
+    fun fetchMain() {
         loading.value = true
         disposable.add(
-            repository.fetchList()
+            repository.fetchMain()
                 .doOnTerminate { loading.value = false }
                 .subscribe(
-                    { event.value = ListEvent.ListFetched(it) },
+                    { event.value = MainEvent.MainFetched(it) },
                     { message.value = it.message })
         )
     }
