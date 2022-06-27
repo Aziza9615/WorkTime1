@@ -3,6 +3,8 @@ package com.example.worktime1.ui.company
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.worktime1.R
 import com.example.worktime1.base.BaseViewHolder
 import com.example.worktime1.databinding.ItemCompanyListBinding
 import com.example.worktime1.model.CompanyModel
@@ -35,17 +37,13 @@ class CompanyAdapter(private val listener: ClickListener) : RecyclerView.Adapter
         notifyDataSetChanged()
     }
 
-    fun addItem(item: CompanyModel) {
-        items.add(item)
-        notifyDataSetChanged()
-    }
-
     class ListViewHolder(var binding: ItemCompanyListBinding): BaseViewHolder(binding.root){
         fun bind(item: CompanyModel) {
-            itemView.company.text = item.company
+            binding.company.text = item.company
         }
     }
 }
+
 interface ClickListener {
     fun onItemListener(item: CompanyModel)
 }

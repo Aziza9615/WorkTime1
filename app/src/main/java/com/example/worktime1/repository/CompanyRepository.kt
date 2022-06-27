@@ -13,6 +13,7 @@ interface CompanyRepository {
 }
 
 class CompanyRepositoryImpl(private val api: CompanyApi) : CompanyRepository {
+
     override fun fetchCompany(): Observable<MutableList<CompanyModel>> {
         return api.fetchCompany()
             .subscribeOn(Schedulers.io())

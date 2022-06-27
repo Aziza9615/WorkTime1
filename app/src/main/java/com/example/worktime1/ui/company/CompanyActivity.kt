@@ -3,6 +3,7 @@ package com.example.worktime1.ui.company
 import android.content.Intent
 import androidx.lifecycle.Observer
 import com.example.worktime1.base.BaseActivity
+import com.example.worktime1.base.CompanyEvent
 import com.example.worktime1.databinding.ActivityCompanyBinding
 import com.example.worktime1.model.CompanyModel
 import com.example.worktime1.ui.scan.ScanActivity
@@ -20,6 +21,7 @@ class CompanyActivity : BaseActivity<CompanyViewModel, ActivityCompanyBinding>(C
         PrefsHelper.instance = PrefsHelper(this)
         setupRecyclerView()
         setupListener()
+        setupSwipeRefresh()
     }
 
     private fun setupListener() {
@@ -33,9 +35,25 @@ class CompanyActivity : BaseActivity<CompanyViewModel, ActivityCompanyBinding>(C
         binding.recyclerView.adapter = adapter
     }
 
+    private fun setupSwipeRefresh() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.fetchCompany()
+        }
+
+        binding.swipeRefreshLayout.setColorSchemeResources(
+            android.R.color.holo_green_light
+        )
+    }
+
     override fun subscribeToLiveData() {
-        viewModel.data.observe(this, Observer {
-            adapter.addItems(it)
+        viewModel.event.observe(this, Observer {
+            when(it) {
+                is CompanyEvent.CompanyFetched -> it.array?.let {
+                    viewModel.company = it
+                    adapter.addItems(it)
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+            }
         })
     }
 

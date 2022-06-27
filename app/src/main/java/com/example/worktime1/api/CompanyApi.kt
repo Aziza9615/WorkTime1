@@ -6,6 +6,7 @@ import com.example.worktime1.utils.ApiConstants
 import com.example.worktime1.utils.ApiConstants.COMPANY_URL
 import io.reactivex.Observable
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface CompanyApi {
     @GET(COMPANY_URL)

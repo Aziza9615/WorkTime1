@@ -9,7 +9,7 @@ import com.example.worktime1.repository.CompanyRepository
 
 class CompanyViewModel(private val repository: CompanyRepository): BaseViewModel<BaseEvent>() {
 
-    val data: MutableLiveData<MutableList<CompanyModel>> = MutableLiveData()
+    var company: MutableList<CompanyModel>? = mutableListOf()
 
     init {
         fetchCompany()
