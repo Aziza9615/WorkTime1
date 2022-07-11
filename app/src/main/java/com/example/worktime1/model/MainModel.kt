@@ -4,9 +4,9 @@ import java.io.Serializable
 
 data class MainModel(
     var id: Int? = null,
-    var day: String,
     var day_of_week: String,
-    var arrival_time: String,
-    var late: Boolean,
-    var user: Int? = null
+    var start_work: String,
+    var finish_work: String,
+    var additional_time: String? = null,
+    var parent: Int? = null
 ) : Serializable

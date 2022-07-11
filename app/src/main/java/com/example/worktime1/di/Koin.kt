@@ -25,17 +25,15 @@ val viewModelModule = module {
 }
 
 val repositoryModule = module {
-    factory<EmailRepository> { EmailRepositoryImpl(get(), get()) }
+    factory<EmailRepository> { EmailRepositoryImpl(get()) }
     factory<CompanyRepository> { CompanyRepositoryImpl(get()) }
 }
 
 val networkRepository = module {
-    single { provideRetrofit(get()) }
-    single { provideOkHttpClient(get(), get()) }
+    single { RetrofitClient(get()) }
+    single { provideOkHttpClient(get()) }
     single { provideHttpLoginingInterceptor() }
-    single { provideTokenAuthenticator(get()) }
-    single { provideHeadersInterceptor(get()) }
-    single { provideEmailApi(get()) }
     single { provideCompanyApi(get()) }
+    single { provideEmailApi(get()) }
     single { PrefsHelper(androidContext()) }
 }

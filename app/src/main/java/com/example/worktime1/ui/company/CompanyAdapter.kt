@@ -3,16 +3,13 @@ package com.example.worktime1.ui.company
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.worktime1.R
 import com.example.worktime1.base.BaseViewHolder
 import com.example.worktime1.databinding.ItemCompanyListBinding
 import com.example.worktime1.model.CompanyModel
-import kotlinx.android.synthetic.main.item_company_list.view.*
 
 class CompanyAdapter(private val listener: ClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var items = mutableListOf<CompanyModel>()
+    var items = mutableListOf<CompanyModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val binding = ItemCompanyListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -32,8 +29,8 @@ class CompanyAdapter(private val listener: ClickListener) : RecyclerView.Adapter
         }
     }
 
-    fun addItems(item: MutableList<CompanyModel>) {
-        items = item
+    fun addItems(item: List<CompanyModel>) {
+        items = item as MutableList<CompanyModel>
         notifyDataSetChanged()
     }
 

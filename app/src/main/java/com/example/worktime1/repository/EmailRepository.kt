@@ -12,10 +12,10 @@ import retrofit2.Response
 
 interface EmailRepository {
     fun email(email: String): MutableLiveData<ResponseResult<EmailModel>>
-    fun code(email: String, pin_code: String): MutableLiveData<ResponseResult<ConfirmModel>>
+    fun code(pin_code: String): MutableLiveData<ResponseResult<ConfirmModel>>
 }
 
-class EmailRepositoryImpl(private val api: EmailApi, private val preferences: PrefsHelper) :
+class EmailRepositoryImpl(private val api: EmailApi) :
     EmailRepository {
 
     override fun email(email: String): MutableLiveData<ResponseResult<EmailModel>> {
@@ -39,11 +39,11 @@ class EmailRepositoryImpl(private val api: EmailApi, private val preferences: Pr
         return data
     }
 
-    override fun code(email: String, pin_code: String): MutableLiveData<ResponseResult<ConfirmModel>> {
-        val map = mapOf("email" to email, "pin_code" to pin_code)
+    override fun code(pin_code: String): MutableLiveData<ResponseResult<ConfirmModel>> {
+        val map = mapOf("pin_code" to pin_code)
         val data: MutableLiveData<ResponseResult<ConfirmModel>> =
             MutableLiveData(ResponseResult.loading())
-        api.fetchConfirm(map).enqueue(object : Callback<ConfirmModel> {
+        api.code(map).enqueue(object : Callback<ConfirmModel> {
             override fun onFailure(call: Call<ConfirmModel>, t: Throwable) {
                 data.value = ResponseResult.error(t.message)
             }
@@ -55,10 +55,13 @@ class EmailRepositoryImpl(private val api: EmailApi, private val preferences: Pr
                         ResponseResult.error("No active account found with the given credentials")
                 }
             }
+
         })
         return data
     }
 }
+
+
 
 
 

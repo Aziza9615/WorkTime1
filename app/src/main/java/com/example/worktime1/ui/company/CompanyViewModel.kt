@@ -1,28 +1,44 @@
 package com.example.worktime1.ui.company
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.worktime1.base.BaseEvent
 import com.example.worktime1.base.BaseViewModel
-import com.example.worktime1.base.CompanyEvent
 import com.example.worktime1.model.CompanyModel
+import com.example.worktime1.network.ResponseResultStatus
 import com.example.worktime1.repository.CompanyRepository
+import kotlinx.coroutines.launch
 
 class CompanyViewModel(private val repository: CompanyRepository): BaseViewModel<BaseEvent>() {
 
-    var company: MutableList<CompanyModel>? = mutableListOf()
+    var company = MutableLiveData<List<CompanyModel>>()
+
+    val error = MutableLiveData<String>()
 
     init {
+        message = MutableLiveData()
         fetchCompany()
     }
 
+    @SuppressLint("NullSafeMutableLiveData")
     fun fetchCompany() {
-        loading.value = true
-        disposable.add(
+        viewModelScope.launch {
             repository.fetchCompany()
-                .doOnTerminate { loading.value = false }
-                .subscribe(
-                    { event.value = CompanyEvent.CompanyFetched(it) },
-                    { message.value = it.message })
-        )
+                .observeForever {
+                    when (it.status) {
+                        ResponseResultStatus.ERROR -> {
+                            message.value = it.message
+                            loading.value = false
+                        }
+                        ResponseResultStatus.SUCCESS -> {
+                            company.value = it.result
+                            loading.value = false
+                        }
+                        ResponseResultStatus.LOADING -> loading.value = true
+                    }
+                }
+        }
+
     }
 }

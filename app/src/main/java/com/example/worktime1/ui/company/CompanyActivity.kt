@@ -3,11 +3,11 @@ package com.example.worktime1.ui.company
 import android.content.Intent
 import androidx.lifecycle.Observer
 import com.example.worktime1.base.BaseActivity
-import com.example.worktime1.base.CompanyEvent
 import com.example.worktime1.databinding.ActivityCompanyBinding
 import com.example.worktime1.model.CompanyModel
 import com.example.worktime1.ui.scan.ScanActivity
 import com.example.worktime1.utils.PrefsHelper
+import kotlinx.android.synthetic.main.item_company_list.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class CompanyActivity : BaseActivity<CompanyViewModel, ActivityCompanyBinding>(CompanyViewModel::class), ClickListener {
@@ -20,14 +20,7 @@ class CompanyActivity : BaseActivity<CompanyViewModel, ActivityCompanyBinding>(C
         viewModel = getViewModel(clazz = CompanyViewModel::class)
         PrefsHelper.instance = PrefsHelper(this)
         setupRecyclerView()
-        setupListener()
         setupSwipeRefresh()
-    }
-
-    private fun setupListener() {
-        binding.txtCompany.setOnClickListener {
-            startActivity(Intent(this@CompanyActivity, ScanActivity::class.java))
-        }
     }
 
     private fun setupRecyclerView() {
@@ -37,7 +30,6 @@ class CompanyActivity : BaseActivity<CompanyViewModel, ActivityCompanyBinding>(C
 
     private fun setupSwipeRefresh() {
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.fetchCompany()
         }
 
         binding.swipeRefreshLayout.setColorSchemeResources(
@@ -46,15 +38,14 @@ class CompanyActivity : BaseActivity<CompanyViewModel, ActivityCompanyBinding>(C
     }
 
     override fun subscribeToLiveData() {
-        viewModel.event.observe(this, Observer {
-            when(it) {
-                is CompanyEvent.CompanyFetched -> it.array?.let {
-                    viewModel.company = it
-                    adapter.addItems(it)
-                    binding.swipeRefreshLayout.isRefreshing = false
-                }
-            }
+        viewModel.company.observe(this, Observer {
+            if (it != null) adapter.addItems(it)
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchCompany()
     }
 
     override fun onItemListener(item: CompanyModel) {

@@ -10,80 +10,27 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-fun provideRetrofit(okHttpClient: OkHttpClient) = Retrofit.Builder()
-    .baseUrl(BASE_URL)
-    .client(okHttpClient)
-    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-    .addConverterFactory(GsonConverterFactory.create())
-    .build()
+class RetrofitClient(private val okHttpClient: OkHttpClient) {
 
-fun provideOkHttpClient(
-    headersInterceptor: HeadersInterceptor,
-    tokenAuthenticator: TokenAuthenticator
-): OkHttpClient {
+    fun provideRetrofit() = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+}
+
+fun provideCompanyApi(retrofit: RetrofitClient) = retrofit.provideRetrofit().create(CompanyApi::class.java)
+fun provideEmailApi(retrofit: RetrofitClient) = retrofit.provideRetrofit().create(EmailApi::class.java)
+
+fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
     return OkHttpClient()
         .newBuilder()
-        .addInterceptor(headersInterceptor)
-        .authenticator(tokenAuthenticator)
+        .addInterceptor(httpLoggingInterceptor)
         .build()
 }
 
 fun provideHttpLoginingInterceptor(): HttpLoggingInterceptor {
     return HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
-    }
-}
-
-fun provideEmailApi(retrofit: Retrofit) = retrofit.create(EmailApi::class.java)
-fun provideCompanyApi(retrofit: Retrofit) = retrofit.create(CompanyApi::class.java)
-
-fun provideTokenAuthenticator(preferences: PrefsHelper) = TokenAuthenticator(preferences)
-
-fun provideHeadersInterceptor(preferences: PrefsHelper)
-        = HeadersInterceptor(preferences)
-
-class HeadersInterceptor(private val preferences: PrefsHelper) : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val token = preferences.getToken()
-        val request = chain.request().newBuilder()
-        if (token.isNotEmpty()) request.addHeader("token", "$token")
-        return chain.proceed(request.build())
-    }
-}
-
-fun provideAuthWithOutAuthenticatorApi(): EmailApi {
-    return Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(
-            OkHttpClient.Builder()
-                .addInterceptor(provideHttpLoginingInterceptor()).build()
-        )
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(EmailApi::class.java)
-}
-
-class TokenAuthenticator(
-    private val preferences: PrefsHelper
-) : Authenticator {
-
-    val api = provideAuthWithOutAuthenticatorApi()
-    private val MAX_COUNT_OF_FALL_RESPONSE = 3
-    override fun authenticate(route: Route?, response: Response): Request? {
-        if (countOfFailedResponse(response) >= MAX_COUNT_OF_FALL_RESPONSE) {
-            return null
-        }
-        return response.request
-            .newBuilder()
-            .addHeader("Authorization", "Token ${preferences.getToken()}")
-            .build()
-    }
-
-    private fun countOfFailedResponse(response: Response): Int {
-        var count = 1
-        while (response.priorResponse != null) {
-            count += 1
-        }
-        return count
     }
 }

@@ -35,9 +35,11 @@ class ScanActivity : BaseActivity<EmailViewModel, ActivityScanBinding>(EmailView
     private fun onClick() {
         binding.txtCompany.setOnClickListener {
             startActivity(Intent(this@ScanActivity, CompanyActivity::class.java))
+            finish()
         }
         binding.btnStatistic.setOnClickListener {
             startActivity(Intent(this@ScanActivity, MainActivity::class.java))
+            finish()
         }
         binding.arrow.setOnClickListener {
             startActivity(Intent(this@ScanActivity, ConfirmActivity::class.java))

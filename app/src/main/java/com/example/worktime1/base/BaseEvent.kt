@@ -23,3 +23,7 @@ sealed class CompanyEvent : BaseEvent() {
 sealed class CodeEvent : BaseEvent() {
     class CodeFetched(val item: ConfirmModel): CodeEvent()
 }
+
+sealed class ArriveEvent : BaseEvent() {
+    class ArriveFetched(val item: ArriveModel): ArriveEvent()
+}

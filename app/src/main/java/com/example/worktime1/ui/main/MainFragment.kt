@@ -4,13 +4,16 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.example.worktime1.base.ArriveEvent
 import com.example.worktime1.base.BaseFragment
-import com.example.worktime1.base.MainEvent
 import com.example.worktime1.databinding.FragmentMainBinding
+import com.example.worktime1.model.ArriveModel
 import com.example.worktime1.model.MainModel
 import com.example.worktime1.ui.scan.ScanActivity
 import com.example.worktime1.utils.PrefsHelper
 import com.google.android.material.datepicker.MaterialDatePicker
+import kotlinx.android.synthetic.main.fragment_main.*
+import org.koin.android.ext.android.bind
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,6 +21,7 @@ import java.util.*
 class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(MainViewModel::class), ClickListener {
 
     private lateinit var adapter: MainAdapter
+    var arriveModel: ArriveModel? = null
     private lateinit var preferences: PrefsHelper
 
     override fun attachBinding(
@@ -54,7 +58,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(MainViewMo
     }
 
     private fun showDataRangePicker() {
-        PrefsHelper.instance.saveDate("")
+        PrefsHelper.instance.saveDate("$date")
         val dateRangePicker =
             MaterialDatePicker.Builder.dateRangePicker()
                 .build()
@@ -87,14 +91,23 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>(MainViewMo
     }
 
     override fun subscribeToLiveData() {
+        viewModel.list.observe(this, Observer {
+            if (it != null) adapter.addItems(it)
+        })
         viewModel.event.observe(this, Observer {
             when (it) {
-                is MainEvent.MainFetched -> it.array?.let {
-                    viewModel.list = it
-                    adapter.addItems(it)
+                is ArriveEvent.ArriveFetched -> {
+                    binding.ontime.text = it.item.arrival_time
+                    binding.beingLate.text = "${it.item.late}"
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchMain()
+        viewModel.fetchArrive()
     }
 
     override fun onItemListener(item: MainModel) {}

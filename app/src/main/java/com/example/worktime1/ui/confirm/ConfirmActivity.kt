@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
+import com.example.worktime1.R
 import com.example.worktime1.base.BaseActivity
 import com.example.worktime1.base.CodeEvent
 import com.example.worktime1.databinding.ActivityConfirmBinding
@@ -37,8 +39,13 @@ class ConfirmActivity :
         }
     }
 
+    private fun code() {
+        val codeName = binding.smsCodeView.toString()
+        viewModel.code(codeName)   }
+
     private fun onClick() {
         binding.nextBtn.setOnClickListener {
+            code()
             if (binding.nextBtn.isEnabled)
                 startActivity(Intent(this@ConfirmActivity, CompanyActivity::class.java))
         }
@@ -50,7 +57,6 @@ class ConfirmActivity :
             onBackPressed()
             finish()
         }
-        //binding.smsCodeView.addTextChangedListener(loginTextWatcher)
     }
 
     private fun countdown() {
